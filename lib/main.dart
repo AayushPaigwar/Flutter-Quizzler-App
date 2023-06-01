@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'question.dart';
 
 void main() => runApp(const Quizzler());
 
@@ -33,25 +34,38 @@ class Quizpage extends StatefulWidget {
 }
 
 List<Icon> scoreKeeper = [];
-List <String> questions =[
-  'Nagpur is Capital of Maharashtra',
-  'Nagpur is Capital of Andhra Pradesh',
-  'Nagpur is Capital of Karnataka',
-  'Nagpur is Capital of Bihar',
+// List<String> questions = [
+//   'Mumbai is Capital of Maharashtra',
+//   'Nagpur is Capital of Andhra Pradesh',
+//   'Nagpur is Capital of Karnataka',
+//   'Nagpur is Capital of Bihar',
+// ];
+
+// List<bool> correctAnswers = [
+//   true,
+//   false,
+//   false,
+//   false,
+// ];
+
+List<Question> questionbank = [
+  Question(q: 'Mumbai is Capital of Maharashtra', a: true),
+  Question(q: 'Nagpur is Capital of Andhra Pradesh', a: false),
+  Question(q: 'Nagpur is Capital of Karnataka', a: false),
+  Question(q: 'Nagpur is Capital of Bihar', a: false),
 ];
+int questionNumber = 0;
 
 class _QuizpageState extends State<Quizpage> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-         Expanded(
+        Expanded(
           flex: 5,
           child: Center(
             child: Text(
-              questions[
-                Random().nextInt(questions.length)  
-              ],
+              questionbank[questionNumber].questionText,
               style: const TextStyle(color: Colors.grey, fontSize: 30),
             ),
           ),
@@ -63,7 +77,19 @@ class _QuizpageState extends State<Quizpage> {
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: () {
+                //What will happen of pressed
+
+                bool answers = questionbank[questionNumber].questionAnswer;
+
+                if (answers == false) {
+                  print('The asnwers is correct');
+                } else {
+                  print('The answer is wronng');
+                }
                 setState(() {
+                  questionNumber++;
+
+                  //questionNumber= questionNumber + 1;
                   scoreKeeper.add(const Icon(
                     Icons.close,
                     color: Colors.red,
@@ -91,7 +117,17 @@ class _QuizpageState extends State<Quizpage> {
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.green)),
               onPressed: () {
+                //checking answers
+                bool answers = questionbank[questionNumber].questionAnswer;
+                if (answers == true) {
+                  print('The asnwers is correct');
+                } else {
+                  print('The answer is wrong');
+                }
                 setState(() {
+                  //for going to the next question
+                  questionNumber++;
+                  //questionNumber =questionNumber +1;
                   scoreKeeper.add(
                     const Icon(
                       Icons.check,
