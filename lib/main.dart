@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'question.dart';
+import 'quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+
+Quizbrain quizBrain = Quizbrain();
 
 void main() => runApp(const Quizzler());
 
@@ -33,28 +35,28 @@ class Quizpage extends StatefulWidget {
   State<Quizpage> createState() => _QuizpageState();
 }
 
+//All Functions
 List<Icon> scoreKeeper = [];
-// List<String> questions = [
-//   'Mumbai is Capital of Maharashtra',
-//   'Nagpur is Capital of Andhra Pradesh',
-//   'Nagpur is Capital of Karnataka',
-//   'Nagpur is Capital of Bihar',
-// ];
 
-// List<bool> correctAnswers = [
-//   true,
-//   false,
-//   false,
-//   false,
-// ];
+void checkanswer(bool userPickedAnswer) {
+  bool answers = quizBrain.getCorrectAnswer();
 
-List<Question> questionbank = [
-  Question(q: 'Mumbai is Capital of Maharashtra', a: true),
-  Question(q: 'Nagpur is Capital of Andhra Pradesh', a: false),
-  Question(q: 'Nagpur is Capital of Karnataka', a: false),
-  Question(q: 'Nagpur is Capital of Bihar', a: false),
-];
-int questionNumber = 0;
+  if (userPickedAnswer == answers) {
+    scoreKeeper.add(const Icon(
+      Icons.check,
+      color: Colors.green,
+      size: 30,
+    ));
+  } else {
+    scoreKeeper.add(
+      const Icon(
+        Icons.close,
+        color: Colors.red,
+        size: 30,
+      ),
+    );
+  }
+}
 
 class _QuizpageState extends State<Quizpage> {
   @override
@@ -65,7 +67,7 @@ class _QuizpageState extends State<Quizpage> {
           flex: 5,
           child: Center(
             child: Text(
-              questionbank[questionNumber].questionText,
+              quizBrain.getQuestionText(),
               style: const TextStyle(color: Colors.grey, fontSize: 30),
             ),
           ),
@@ -78,23 +80,22 @@ class _QuizpageState extends State<Quizpage> {
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: () {
                 //What will happen of pressed
+                if (quizBrain.isFinished() == true) {
+                  Alert(
+                    context: context,
+                    title: 'Finished!',
+                    desc: 'You\'ve reached the end of the quiz.',
+                  ).show();
 
-                bool answers = questionbank[questionNumber].questionAnswer;
+                  quizBrain.reset();
 
-                if (answers == false) {
-                  print('The asnwers is correct');
+                  scoreKeeper = [];
                 } else {
-                  print('The answer is wronng');
+                  checkanswer(false);
                 }
-                setState(() {
-                  questionNumber++;
 
-                  //questionNumber= questionNumber + 1;
-                  scoreKeeper.add(const Icon(
-                    Icons.close,
-                    color: Colors.red,
-                    size: 40,
-                  ));
+                setState(() {
+                  quizBrain.nextQuestion();
                 });
               },
               child: const Center(
@@ -117,24 +118,23 @@ class _QuizpageState extends State<Quizpage> {
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.green)),
               onPressed: () {
-                //checking answers
-                bool answers = questionbank[questionNumber].questionAnswer;
-                if (answers == true) {
-                  print('The asnwers is correct');
-                } else {
-                  print('The answer is wrong');
-                }
                 setState(() {
+                  //Dialog Button
+                  if (quizBrain.isFinished() == true) {
+                    Alert(
+                      context: context,
+                      title: 'Finished!',
+                      desc: 'You\'ve reached the end of the quiz.',
+                    ).show();
+
+                    quizBrain.reset();
+
+                    scoreKeeper = [];
+                  } else {
+                    checkanswer(true);
+                  }
                   //for going to the next question
-                  questionNumber++;
-                  //questionNumber =questionNumber +1;
-                  scoreKeeper.add(
-                    const Icon(
-                      Icons.check,
-                      color: Colors.green,
-                      size: 40,
-                    ),
-                  );
+                  quizBrain.nextQuestion();
                 });
               },
               child: const Center(
