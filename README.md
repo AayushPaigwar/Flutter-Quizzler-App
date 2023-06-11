@@ -1,11 +1,7 @@
-# flutter_quizzler
-
-A new Flutter project.
-
-
-----
-
-# Basic OOP Concepts Dart
+# Flutter Quizzler 
+##### A new Flutter project.
+---
+# Basics of OOP Concepts Dart
 ## Class example
 ```
 class Car
